@@ -88,7 +88,6 @@ num_labels=1000
 target_label=288
 tlab=Variable(torch.from_numpy(np.eye(num_labels)[target_label]).to(device).float())
 
-
 print()
 
 shape = (1,3,224,224)

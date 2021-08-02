@@ -6,12 +6,18 @@ import numpy as np
 from torch.utils.data import Dataset,DataLoader
 import matplotlib.pyplot as plt
 import torch
+
 CLASSES = ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
            'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike',
            'train', 'bottle', 'chair', 'dining table', 'potted plant',
            'sofa', 'tvmonitor']
 
-
+def name():
+    CLASSES = ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
+               'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike',
+               'train', 'bottle', 'chair', 'dining table', 'potted plant',
+               'sofa', 'tvmonitor']
+    return CLASSES
 # voc_trainset = VOCDetection(
 #     ".\data\\train", year="2007", image_set='trainval', download=False)
 # print(len(voc_trainset))
@@ -28,11 +34,10 @@ def show_rect(image: np.ndarray, bndbox):
     image_show = image
     return cv2.rectangle(image_show, pt1, pt2, (0, 255, 255), 2)
 
-
 def show_name(image, name, p_tl):
     return cv2.putText(image, name, p_tl, 1, 1, (255, 255, 0))
 
-def show():
+def show(voc_trainset):
     for i, samele in enumerate(voc_trainset, 1):
         image, annotation = samele[0], samele[1]["annotation"]
         objects = annotation['object']
@@ -60,6 +65,7 @@ def show():
                 show_image = show_name(show_image, object_name, (x_min, y_min))
         cv2.imshow('image', show_image)
         cv2.waitKey(0)
+
 
 class Voc2007(Dataset):
     """重写Dataset"""
@@ -103,7 +109,7 @@ class Voc2007(Dataset):
             img = np.pad(img, ((padh, padh), (0, 0), (0, 0)), 'constant', constant_values=0)
 
         img = cv2.resize(img, (input_size, input_size))
-        # 图像增广部分，这里不做过多处理，因为改变bbox信息还蛮麻烦的
+        # 图像增广部分，将其转换为torch.tensor
         if self.transforms:
             transform = transforms.Compose([
                 transforms.ToTensor()
@@ -130,12 +136,11 @@ class Voc2007(Dataset):
                 bbox[i * 5 + 2] = (bbox[i * 5 + 2] * h + padh) / w
                 bbox[i * 5 + 4] = (bbox[i * 5 + 4] * h) / w
 
-        # 此处可以写代码验证一下，查看padding后修改的bbox数值是否正确，在原图中画出bbox检验
+        # 验证一下，查看padding后修改的bbox数值是否正确，在原图中画出bbox检验
         # examine(img,bbox)
-
         labels = convert_labels(bbox)
         # 将所有bbox的(cls,x,y,w,h)数据转换为训练时方便计算Loss的数据形式(7,7,5*B+cls_num)
-        # 此处可以写代码验证一下，经过convert_bbox2labels函数后得到的labels变量中储存的数据是否正确
+
         labels = torch.tensor(labels)
         return img, labels
 
@@ -159,6 +164,8 @@ def convert_labels(bbox, numbox=2, numclass=20):
         labels[gridy, gridx, 0:5] = np.array([gridpx, gridpy, bbox[i * 5 + 3], bbox[i * 5 + 4], 1])
         labels[gridy, gridx, 5:10] = np.array([gridpx, gridpy, bbox[i * 5 + 3], bbox[i * 5 + 4], 1])
         labels[gridy, gridx, 10 + int(bbox[i * 5])] = 1
+
+
     # print(labels[3][4])
     return labels
 
@@ -171,14 +178,20 @@ def examine(img,label):
     pt2 = (int(label[1] * w + label[3] * w / 2), int(label[2] * h + label[4] * h / 2))  # box右下角坐标
     cv2.putText(img, CLASSES[int(label[0])], pt1, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
     cv2.rectangle(img, pt1, pt2, (0, 0, 255, 2))
-
     cv2.imshow("img", img)
     cv2.waitKey(0)
 
+def get_data(batch_size=5):
+    dataset = Voc2007(Dataset_path, "trainval", True)
+    dataloader = DataLoader(dataset, batch_size, shuffle=True)
+    return dataloader
+
+
 
 if __name__ == "__main__":
-    dataset = Voc2007(Dataset_path,"trainval",True)
-    dataloader = DataLoader(dataset,64,shuffle=True)
+    dataset= Voc2007(Dataset_path,"trainval",True)
+    print(len(dataset))
+    dataloader = DataLoader(dataset,32,shuffle=True)
     for img,target in dataloader:
         print("!",img.shape)
         print("!",target.shape)
@@ -186,5 +199,9 @@ if __name__ == "__main__":
     for i in img:
         plt.imshow(i.numpy().transpose(1, 2, 0).astype(np.float32))
         plt.show()
-        print(target[0][3][4])
+        for k in range(1):
+            for i in range(7):
+                for j in range(7):
+                    if torch.max(target[k][i][j]==1):
+                        print(target[k][i][j])
         break

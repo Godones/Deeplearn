@@ -1,16 +1,23 @@
-# This is a sample Python script.
+from pulp import *
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+problem = LpProblem("max",LpMaximize)
 
+a1 = LpVariable("a1")
+a2 = LpVariable("a2")
+b1 = LpVariable("b1")
+b2 = LpVariable("b2")
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+z = 90*a1 + 64*a2 + 5.17*b1+8*b2
+s1 = b2 <= 4*a2
+s4 = b1 <= 3*a1
+s3 = 6*a1 + 4*a2 +b1+b2 <=1200
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+problem +=s1
+# problem +=s2
+problem +=s3
+problem +=s4
+problem +=z
+problem.solve()
+print(problem)
+print(a1.value(),a2.value(),b1.value(),b2.value())
+print((value(problem.objective)))

@@ -42,4 +42,4 @@ if __name__ =="__main__":
     x = torch.randn(1,3,224,224)
     print(x.shape)
     model = My_Alexnet(100)
-    print(model(x).shape)
+    print(model(x))

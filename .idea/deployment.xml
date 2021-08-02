@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="guest@10.1.0.163:22 password" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="guest@10.1.0.163:22 password">
         <serverdata>
@@ -9,10 +9,24 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="guest@10.1.0.163:22 password (1)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/guest/excelsior/clf/Detection" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="guest@10.1.0.163:22 password (2)">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="guest@10.1.0.163:22 password (3)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_616" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
@@ -37,6 +51,17 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="root@hz.matpool.com:29524">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/mnt/Detection" local="$PROJECT_DIR$" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath path="/mnt/Detection/Al安全入门/whiteAttack/data" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

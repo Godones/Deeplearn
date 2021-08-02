@@ -6,6 +6,7 @@ CLASSES = ['person', 'bird', 'cat', 'cow', 'dog', 'horse', 'sheep',
            'aeroplane', 'bicycle', 'boat', 'bus', 'car', 'motorbike',
            'train', 'bottle', 'chair', 'dining table', 'potted plant',
            'sofa', 'tvmonitor']
+
 Dataset_path = "./data/train/VOCdevkit/VOC2007/"
 
 
@@ -48,6 +49,7 @@ def convert_annotation(filename):
         if class_name not in CLASSES:
             continue
         class_name_id = CLASSES.index(class_name)  # 图片对应的类别
+
         xmlbox = it.find('bndbox')  # 找到box坐标
         points = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text),
                   float(xmlbox.find('ymax').text))
@@ -85,6 +87,6 @@ def show_labels_img(imgname):
 
 if __name__ == "__main__":
     print(os.getcwd())
-    # if not os.path.exists("./labels"):
-    make_label_txt()
+    if not os.path.exists("./labels"):
+        make_label_txt()
     show_labels_img("000005")
